@@ -1,0 +1,15 @@
+<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+<app-menu
+  (perfilClick)="perfil = true; product = false;"
+  (productClick)="product = true; perfil = false"
+>
+  <div [hidden]="!perfil">
+    <app-cadastro [isPerfil]="true" (setLoading)="isLoading = $event"></app-cadastro>
+  </div>
+
+  <div [hidden]="!product">
+    <app-products-to-buy *ngIf="type !== 'ADMIN'"></app-products-to-buy>
+    <app-products *ngIf="type === 'ADMIN'" [type]="type" (setLoading)="isLoading = $event"></app-products>
+  </div>
+</app-menu>

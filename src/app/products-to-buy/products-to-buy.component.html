@@ -1,0 +1,23 @@
+<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+<div class="produto-container">
+  <mat-card *ngFor="let produto of products" class="produto-card">
+    <mat-card-header>
+      <mat-card-title>{{ produto.nome }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ produto.descricao }}</p>
+      <p><strong>Preço:</strong> R$ {{ produto.preco }}</p>
+      <p><strong>Quantidade em Estoque:</strong> {{ produto.qtdEstoque }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="addToCart()"
+      >
+        Adicionar ao Carrinho
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
