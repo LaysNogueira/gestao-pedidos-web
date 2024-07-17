@@ -8,7 +8,7 @@ export class AuthGuard {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    if (localStorage.getItem('auth') && localStorage.getItem('auth')) {
+    if ( typeof window !== 'undefined' && typeof window.document !== 'undefined' && localStorage.getItem('auth') && localStorage.getItem('auth')) {
       return true;
     } else {
       this.router.navigate(['/login']);

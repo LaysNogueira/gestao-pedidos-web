@@ -10,4 +10,6 @@ export const routes: Routes = [
   { path: 'cadastro', component: CadastroComponent },
   { path: 'produtos', component: ProductsToBuyComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/produtos', pathMatch: 'full' },
+  { path: '**', redirectTo: '/produtos' },
 ];

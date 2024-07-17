@@ -52,7 +52,7 @@ import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
     MatSnackBarModule,
     LoadingComponent,
     NgxMaskDirective,
-    NgxMaskPipe
+    NgxMaskPipe,
   ],
   templateUrl: './cadastro.component.html',
   providers: [UserService, provideNgxMask()],
@@ -119,6 +119,9 @@ export class CadastroComponent implements OnInit, OnDestroy {
   viaCep() {
     const cep = this.cadastroForm.get('cep')?.value;
     if (cep.length < 8) return;
+
+    this.isLoading = true;
+    this.setLoading.emit(true);
 
     this.userService.getCep(cep).subscribe({
       next: (res: User) => {

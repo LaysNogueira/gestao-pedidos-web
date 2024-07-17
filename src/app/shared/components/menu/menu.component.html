@@ -9,7 +9,14 @@
     <mat-nav-list>
       <a mat-list-item (click)="perfilClick.emit()">Perfil</a>
       <a mat-list-item (click)="productClick.emit()">Produtos</a>
-      <!-- <a mat-list-item>Services</a> -->
+      <a mat-list-item (click)="cartClick.emit()" *ngIf="type !== 'ADMIN'"
+        >Carrinho</a
+      >
+      <a mat-list-item (click)="pedidoClick.emit()">Pedidos</a>
+
+      <a mat-list-item (click)="customerClick.emit()" *ngIf="type === 'ADMIN'"
+        >Clientes</a
+      >
       <a mat-list-item (click)="logout()">Sair</a>
     </mat-nav-list>
   </mat-sidenav>

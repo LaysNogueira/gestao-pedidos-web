@@ -12,4 +12,5 @@ export interface User {
   cpf: string;
   password: string;
   role: string;
+  enderecoCompleto?: string;
 }

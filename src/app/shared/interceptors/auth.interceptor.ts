@@ -8,10 +8,18 @@ import { HttpInterceptorFn } from '@angular/common/http';
 
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const snackBar = inject(MatSnackBar);
-  const token = localStorage.getItem('token') || 'a';
+
+  const token =
+    typeof window !== 'undefined' && typeof window.document !== 'undefined'
+      ? localStorage.getItem('token') || 'a'
+      : '';
   let authReq = req;
 
-  if (token) {
+  if (
+    token &&
+    !(req.method === 'POST' && req.url?.includes('usuario')) &&
+    !(req.method === 'POST' && req.url?.includes('auth'))
+  ) {
     authReq = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`),
     });
@@ -29,9 +37,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
         } else if (error.status === 403) {
           errorMsg = 'Forbidden! Você não possui autorização.';
         } else {
-          if (error.error.message) errorMsg = error.error.message;
-          else
-            errorMsg = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          errorMsg = `Error Code: ${error.status}\nMessage: ${error.message}`;
         }
         if (error.status === 400 && error.url?.includes('auth')) {
           errorMsg = 'Email ou senha inválido!';

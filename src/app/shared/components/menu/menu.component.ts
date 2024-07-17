@@ -34,6 +34,9 @@ import { CommonModule } from '@angular/common';
 export class MenuComponent implements OnInit {
   @Output() perfilClick = new EventEmitter();
   @Output() productClick = new EventEmitter();
+  @Output() customerClick = new EventEmitter();
+  @Output() cartClick = new EventEmitter();
+  @Output() pedidoClick = new EventEmitter();
 
   public username: string = '';
   public type: string = '';
