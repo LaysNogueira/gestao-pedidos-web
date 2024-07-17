@@ -8,11 +8,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PedidoService } from '../shared/services/pedido.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-products-to-buy',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, LoadingComponent, CommonModule],
+  imports: [MatCardModule, MatButtonModule, LoadingComponent, CommonModule, MatIconModule],
   templateUrl: './products-to-buy.component.html',
   styleUrl: './products-to-buy.component.scss',
 })

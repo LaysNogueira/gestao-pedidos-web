@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <h2 *ngIf="!products.length">Não há dados há serem exibidos!</h2>
+  <h2 *ngIf="!products.length">Não há produtos cadastrados!</h2>
   <mat-table *ngIf="products.length" [dataSource]="products" class="mat-elevation-z8">
     <ng-container matColumnDef="nome">
       <mat-header-cell *matHeaderCellDef> Nome </mat-header-cell>

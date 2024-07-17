@@ -55,9 +55,9 @@ export class PedidoComponent implements OnInit, OnChanges {
   constructor(
     private pedidoService: PedidoService,
     private productService: ProductService,
-    private userService: UserService
+    private userService: UserService,
+    private matSnack: MatSnackBar
   ) {}
-
 
   rowDef = ['nome', 'descricao', 'preco', 'quantidade'];
   pedidos: any[] = [];
@@ -73,7 +73,6 @@ export class PedidoComponent implements OnInit, OnChanges {
     }
   }
 
-
   toDeliver(id: string) {
     this.setLoading.emit(true);
     this.pedidoService.deliver(id).subscribe({
@@ -85,42 +84,64 @@ export class PedidoComponent implements OnInit, OnChanges {
     });
   }
 
-  loadPedido(): void {
+  showMessage(message: string) {
+    this.matSnack.open(message, 'Fechar', {
+      duration: 3000,
+    });
+  }
+
+  loadPedido(message?: string): void {
     this.setLoading.emit(true);
     this.isLoading = true;
     this.pedidos = [];
-    this.pedidoService.getAllPedidos().subscribe({
-      next: (data: Pedido[]) => {
-        data = data.filter(
-          (pedido) => pedido.status !== 'AGUARDANDO PAGAMENTO'
-        );
-        this.pedidos = data;
-        data.forEach((pedido, i) => {
-          pedido.itemList.forEach(async (item, j) => {
-            Promise.all([
-              this.productService.getProduct(item.produto).toPromise(),
-              this.userService.getUser(pedido.cliente).toPromise(),
-            ]).then(async ([p, u]) => {
-              this.pedidos[i].clienteNome = u?.nome;
-              this.pedidos[i].enderecoCompleto = u?.enderecoCompleto;
 
-              this.pedidos[i].itemList[j] = {
-                ...p,
-                idPedido: pedido.identificador,
-                quantidade: item.quantidade,
-              };
+    const next = async (data: Pedido[]) => {
+      data = data.filter((pedido) => pedido.status !== 'AGUARDANDO PAGAMENTO');
+      this.pedidos = data;
 
-              if (j === pedido.itemList.length - 1) {
-                asyncScheduler.schedule(() => {
-                  this.setLoading.emit(false);
-                  this.isLoading = false;
-                }, 1000);
-              }
-            });
-          });
-        });
-      },
-      error: () => this.setLoading.emit(false),
-    });
+      if (this.pedidos.length === 0) {
+        this.setLoading.emit(false);
+        if (message) this.showMessage(message);
+        return;
+      }
+
+      for (let i = 0; i < data.length; i++) {
+        const pedido = data[i];
+        for (let j = 0; j < pedido.itemList.length; j++) {
+          const item = pedido.itemList[j];
+
+          const request = await Promise.all([
+            this.productService.getProduct(item.produto).toPromise(),
+            this.userService.getUser(pedido.cliente).toPromise(),
+          ]);
+
+          const [p, u] = request;
+          this.pedidos[i].clienteNome = u?.nome;
+          this.pedidos[i].enderecoCompleto = u?.enderecoCompleto;
+
+          this.pedidos[i].itemList[j] = {
+            ...p,
+            idPedido: pedido.identificador,
+            quantidade: item.quantidade,
+          };
+          
+        }
+      }
+      this.setLoading.emit(false);
+      this.isLoading = false;
+      if (message) this.showMessage(message);
+    };
+
+    if (this.type === 'ADMIN') {
+      this.pedidoService.getAllPedidos().subscribe({
+        next: (data: Pedido[]) => next(data),
+        error: () => this.setLoading.emit(false),
+      });
+    } else {
+      this.pedidoService.getPedidos().subscribe({
+        next: (data: Pedido[]) => next(data),
+        error: () => this.setLoading.emit(false),
+      });
+    }
   }
 }

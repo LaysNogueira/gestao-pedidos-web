@@ -1,7 +1,13 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-end mb-3"></div>
 
-  <h2 *ngIf="!pedidos.length">Não há dados há serem exibidos!</h2>
+  <h2 *ngIf="!pedidos.length && !isLoading">Não há pedidos há serem exibidos!</h2>
+
+  <div class="d-flex justify-content-center mb-3">
+    <button mat-raised-button color="primary" (click)="loadPedido('Atualizado com sucesso!')">
+      <mat-icon>refresh</mat-icon> Atualizar
+    </button>
+  </div>
 
   <mat-accordion *ngIf="pedidos.length > 0 && !isLoading">
     <mat-expansion-panel *ngFor="let pedido of pedidos">

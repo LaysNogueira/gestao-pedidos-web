@@ -157,13 +157,24 @@ export class CartComponent implements OnInit, OnChanges {
     this.setLoading.emit(true);
     this.pedidos = [];
     this.pedidoService.getPedidos().subscribe({
-      next: (data: Pedido[]) => {
+      next: async (data: Pedido[]) => {
+        if (data.length === 0) {
+          this.isLoading = false;
+          this.setLoading.emit(false);
+          if (message) this.showMessage(message);
+          return;
+        }
+
         data = data.filter(
           (pedido) => pedido.status === 'AGUARDANDO PAGAMENTO'
         );
         this.pedidoMain = data;
-        data.forEach((pedido) => {
-          pedido.itemList.forEach(async (item, i) => {
+
+        for (let i = 0; i < data.length; i++) {
+          const pedido = data[i];
+          for (let j = 0; j < pedido.itemList.length; j++) {
+            const item = pedido.itemList[j];
+
             const p = await this.productService
               .getProduct(item.produto)
               .toPromise();
@@ -172,16 +183,12 @@ export class CartComponent implements OnInit, OnChanges {
               idPedido: pedido.identificador,
               quantidade: item.quantidade,
             });
-            if (i === pedido.itemList.length - 1) {
-              asyncScheduler.schedule(() => {
-                this.isLoading = false;
-                this.setLoading.emit(false);
-              }, 1000);
-            }
-          });
-        });
+          }
+        }
 
         if (message) this.showMessage(message);
+        this.isLoading = false;
+        this.setLoading.emit(false);
       },
       error: () => this.setLoading.emit(false),
     });

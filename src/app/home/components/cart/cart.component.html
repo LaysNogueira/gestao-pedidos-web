@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <h2 *ngIf="!pedidos.length">Não há dados há serem exibidos!</h2>
+  <h2 *ngIf="!pedidos.length">Seu carrinho está vazio!</h2>
 
   <mat-table
     *ngIf="!isLoading && pedidos.length > 0"
