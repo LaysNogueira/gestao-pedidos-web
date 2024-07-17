@@ -50,6 +50,7 @@ export class CartComponent implements OnInit, OnChanges {
   @Output() changeTabMenu = new EventEmitter();
   public pedidoMain: Pedido[] = [];
   public isLoading: boolean = true;
+  total = 0;
   constructor(
     private dialog: MatDialog,
     private pedidoService: PedidoService,
@@ -153,6 +154,7 @@ export class CartComponent implements OnInit, OnChanges {
   }
 
   loadCart(message?: string): void {
+    this.total = 0;
     this.isLoading = true;
     this.setLoading.emit(true);
     this.pedidos = [];
@@ -173,11 +175,16 @@ export class CartComponent implements OnInit, OnChanges {
         for (let i = 0; i < data.length; i++) {
           const pedido = data[i];
           for (let j = 0; j < pedido.itemList.length; j++) {
+            this.setLoading.emit(true);
             const item = pedido.itemList[j];
 
             const p = await this.productService
               .getProduct(item.produto)
               .toPromise();
+
+            if (p?.preco)
+              this.total = (this.total || 0) + p?.preco * item.quantidade;
+
             this.pedidos.push({
               ...p,
               idPedido: pedido.identificador,
@@ -187,8 +194,10 @@ export class CartComponent implements OnInit, OnChanges {
         }
 
         if (message) this.showMessage(message);
-        this.isLoading = false;
-        this.setLoading.emit(false);
+        asyncScheduler.schedule(() => {
+          this.isLoading = false;
+          this.setLoading.emit(false);
+        }, 1000);
       },
       error: () => this.setLoading.emit(false),
     });

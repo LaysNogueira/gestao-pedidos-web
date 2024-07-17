@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-end mb-3"></div>
 
-  <h2 *ngIf="!pedidos.length && !isLoading">Não há pedidos há serem exibidos!</h2>
+  <h2 *ngIf="!pedidos.length">Não há pedidos há serem exibidos!</h2>
 
   <div class="d-flex justify-content-center mb-3">
     <button mat-raised-button color="primary" (click)="loadPedido('Atualizado com sucesso!')">
@@ -20,6 +20,8 @@
             {{ pedido.enderecoCompleto }}
           </p>
           <p>STATUS: {{ pedido.status === 'PAGO' ? 'AGUARDANDO ENTREGA' :  pedido.status}}</p>
+          <p>TOTAL: {{ pedido.total | currency : "BRL" }} </p>
+          
         </mat-panel-description>
       </mat-expansion-panel-header>
       <button

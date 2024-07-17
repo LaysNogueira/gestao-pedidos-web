@@ -74,8 +74,17 @@
     <mat-row *matRowDef="let row; columns: rowDef"></mat-row>
   </mat-table>
 
+  <p class="d-flex justify-content-center mt-3">
+    <strong>Total: {{ total | currency : "BRL" }}</strong>
+  </p>
+
   <div class="d-flex justify-content-center mt-3" *ngIf="pedidos.length > 0">
-    <button mat-raised-button color="primary" style="margin-right: 15px" (click)="onPay()">
+    <button
+      mat-raised-button
+      color="primary"
+      style="margin-right: 15px"
+      (click)="onPay()"
+    >
       Efetuar Pagamento
     </button>
   </div>

@@ -111,7 +111,6 @@ export class PedidoComponent implements OnInit, OnChanges {
           this.setLoading.emit(true);
           const item = pedido.itemList[j];
 
-
           const request = await Promise.all([
             this.productService.getProduct(item.produto).toPromise(),
             this.userService.getUser(pedido.cliente).toPromise(),
@@ -121,12 +120,15 @@ export class PedidoComponent implements OnInit, OnChanges {
           this.pedidos[i].clienteNome = u?.nome;
           this.pedidos[i].enderecoCompleto = u?.enderecoCompleto;
 
+          if (p?.preco)
+            this.pedidos[i].total =
+              (this.pedidos[i].total || 0) + p?.preco * item.quantidade;
+
           this.pedidos[i].itemList[j] = {
             ...p,
             idPedido: pedido.identificador,
             quantidade: item.quantidade,
           };
-          
         }
       }
       this.setLoading.emit(false);
