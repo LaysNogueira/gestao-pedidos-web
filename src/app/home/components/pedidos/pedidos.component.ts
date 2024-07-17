@@ -106,9 +106,11 @@ export class PedidoComponent implements OnInit, OnChanges {
       }
 
       for (let i = 0; i < data.length; i++) {
+        this.setLoading.emit(true);
         const pedido = data[i];
         for (let j = 0; j < pedido.itemList.length; j++) {
           const item = pedido.itemList[j];
+
 
           const request = await Promise.all([
             this.productService.getProduct(item.produto).toPromise(),
